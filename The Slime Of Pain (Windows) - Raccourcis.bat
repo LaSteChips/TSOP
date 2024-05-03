@@ -22,6 +22,6 @@ if %errorlevel% neq 0 (
 )
 
 rem Lancer votre jeu
-python The_Slime_Of_Pain/main.py
+python main.py
 
 pause

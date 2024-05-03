@@ -20,6 +20,6 @@ else
 fi
 
 # Lancer votre jeu
-python3 The_Slime_Of_Pain/main.py
+python3 main.py
 
 read -p "Appuyez sur Entrée pour quitter..."
