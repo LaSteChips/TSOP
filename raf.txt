@@ -1,0 +1,13 @@
+a faire si le temp le permet : 
+    - créer une magie berserk 
+        - mais ne peux pas : 
+                            - se heal
+                            - annuler son sort pendant les 20 secondes précédentes
+        - durée : illimités (tant que la touche est presser)
+        - boost de force dégats de 20 %
+        - boost de vitesse de 35 %
+        - -2 pv toutes les secondes
+    - créer les perfect parry
+        - si le bouclier est effectuer dans un certains laps de temps, le joueur subit encore moins de dégats et renvoi 30% des dégats de l'ennemie (qui est stun pendant 1.75 secondes)
+    - créer un message de mort pour chaque ennemies (~ 2 par ennemies dans l'idéal)
+    - trouver 1 truk pour la save
