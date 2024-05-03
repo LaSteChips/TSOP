@@ -1,4 +1,8 @@
 @echo off
+set local
+
+rem Chemin du fichier ou du raccourci dont vous souhaitez changer l'icône
+set "FICHIER=graphics/player/left_idle/2.png"
 
 rem Vérifier si Python est installé
 python --version >nul 2>&1
