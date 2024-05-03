@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Vérifier si Python est installé
+if ! command -v python3 &> /dev/null; then
+    echo "Python n'est pas installé. Installation en cours..."
+    # Télécharger et installer Python 3.11.9
+    curl -o python-3.11.9-macos.pkg https://www.python.org/ftp/python/3.11.9/python-3.11.9-macos.pkg
+    sudo installer -pkg python-3.11.9-macos.pkg -target /
+else
+    echo "Python est bien installé"
+fi
+
+# Vérifier si Pygame est installé
+if ! python3 -c "import pygame" &> /dev/null; then
+    echo "Pygame n'est pas installé. Installation en cours..."
+    # Installer Pygame
+    python3 -m pip install pygame
+else
+    echo "Pygame est bien installé"
+fi
+
+# Lancer votre jeu
+python3 The_Slime_Of_Pain/main.py
+
+read -p "Appuyez sur Entrée pour quitter..."
