@@ -1,4 +1,5 @@
-- les collisions
+- augmenter la fréquences de animations
+- le slime trop fort
 
 a faire si le temp le permet (ou pour futur maj): 
     - créer une magie berserk 

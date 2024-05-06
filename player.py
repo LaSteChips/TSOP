@@ -340,5 +340,4 @@ class Player(Entity):
 				if pygame.time.get_ticks() - self.death_start_time >= 3000:  
 					self.dead = False  # Réinitialiser l'état du joueur à vivant
 					self.health = self.stats['health'] * 0.1  # Réinitialiser la santé
-					# D'autres réinitialisations peuvent être nécessaires en fonction de votre logique de jeu
 					self.death_start_time = None  # Réinitialiser le temps de début de la mort

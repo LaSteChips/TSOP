@@ -1,7 +1,7 @@
 # game setup
-WIDTH    = 1280
-HEIGHT   = 720
-FPS      = 120
+WIDTH    = 1920
+HEIGHT   = 1080
+FPS      = 60
 TILESIZE = 64
 HITBOX_OFFSET = {
 	'player': -26,
