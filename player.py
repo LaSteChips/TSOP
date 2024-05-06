@@ -333,12 +333,11 @@ class Player(Entity):
 
 		# Si le joueur est mort
 		if self.dead:
-			# Attendre 1 seconde avant de redémarrer
 			if not hasattr(self, 'death_start_time'):
 				self.death_start_time = pygame.time.get_ticks()  # Enregistrer le temps auquel la mort a commencé
 			else:
 				# Vérifier si 5 seconde s'est écoulée depuis le début de la mort
-				if pygame.time.get_ticks() - self.death_start_time >= 5000:  
+				if pygame.time.get_ticks() - self.death_start_time >= 3000:  
 					self.dead = False  # Réinitialiser l'état du joueur à vivant
 					self.health = self.stats['health'] * 0.1  # Réinitialiser la santé
 					# D'autres réinitialisations peuvent être nécessaires en fonction de votre logique de jeu
