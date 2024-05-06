@@ -1,4 +1,6 @@
-a faire si le temp le permet : 
+- les collisions
+
+a faire si le temp le permet (ou pour futur maj): 
     - créer une magie berserk 
         - mais ne peux pas : 
                             - se heal

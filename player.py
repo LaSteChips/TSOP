@@ -51,8 +51,8 @@ class Player(Entity):
 		self.magic = list(magic_data.keys())[self.magic_index]
 
 		# Stats
-		self.stats = {'health': 75, 'energy': 15, 'attack': 3, 'magic': 25, 'speed': 4, 'mana_gain_per_hit' : 2}
-		self.max_stats = {'health': 100, 'energy': 100, 'attack': 10, 'magic' : 10, 'speed': 10}
+		self.stats = {'health': 100, 'energy': 15, 'attack': 1, 'magic': 50, 'speed': 8, 'mana_gain_per_hit' : 5}
+		self.max_stats = {'health': 150, 'energy': 50, 'attack': 2, 'magic' : 75, 'speed': 10}
 		self.upgrade_cost = {'health': 100, 'energy': 100, 'attack': 100, 'magic' : 100, 'speed': 100}
 		self.health = self.stats['health']
 		self.energy = self.stats['energy']
@@ -66,7 +66,7 @@ class Player(Entity):
 
 		# Import sound
 		self.weapon_attack_sound = pygame.mixer.Sound('audio/sword.wav')
-		self.weapon_attack_sound.set_volume(0)
+		self.weapon_attack_sound.set_volume(0.1)
 		self.hit_attack_sound = pygame.mixer.Sound('audio/Fire.wav')
 		self.hit_attack_sound.set_volume(0.4)
 

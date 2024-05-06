@@ -37,7 +37,7 @@ UI_BORDER_COLOR_ACTIVE = 'gold'
 
 # weapons 
 weapon_data = {
-	'sword': {'cooldown': 100, 'damage': 15, 'graphic':'graphics/weapons/sword/full.png'}
+	'sword': {'cooldown': 100, 'damage': 1, 'graphic':'graphics/weapons/sword/full.png'}
 }
 
 # shield data
@@ -47,13 +47,13 @@ shield_data = {
 
 # magic
 magic_data = {
-	'heal': {'strength':20,'cost':7,'cooldown': 2000,'graphic':'graphics/particles/heal/frames/2.png'}
+	'heal': {'strength':20,'cost': 5,'cooldown': 2000,'graphic':'graphics/particles/heal/frames/2.png'}
 }
 
 # enemy
 monster_data = {
-	'squid': {'health':30,'exp':20,'damage':5,'attack_type':'slash','attack_sound':'audio/attack/slash.wav','speed':3,'resistance':1,'attack_radius':80,'notice_radius':360},
-	'spirit': {'health':6,'exp':15,'damage':6,'attack_type':'thunder','attack_sound':'audio/attack/fireball.wav','speed':4,'resistance':1 ,'attack_radius':60,'notice_radius':350},
-	'bamboo': {'health':9,'exp':20,'damage':4,'attack_type':'leaf_attack','attack_sound':'audio/attack/slash.wav','speed':3,'resistance':1,'attack_radius':50,'notice_radius':300},
-	'king_cheese': {'health':200,'exp':0,'damage':10,'attack_type':'claw','attack_sound':'audio/attack/claw.wav','speed':2,'resistance':0.2,'attack_radius':120,'notice_radius':400}
+	'squid': {'health':5,'exp':35,'damage':12,'attack_type':'claw','attack_sound':'audio/attack/slash.wav','speed':5,'resistance':1.7 ,'attack_radius':80,'notice_radius':360},
+	'spirit': {'health': 7,'exp':50,'damage':25,'attack_type':'thunder','attack_sound':'audio/attack/fireball.wav','speed':6,'resistance':1.3 ,'attack_radius':60,'notice_radius':350},
+	'bamboo': {'health': 3,'exp':20,'damage':15,'attack_type':'leaf_attack','attack_sound':'audio/attack/slash.wav','speed':4,'resistance':1.5,'attack_radius':50,'notice_radius':300},
+	'king_cheese': {'health': 35,'exp':100,'damage':35,'attack_type':'slash','attack_sound':'audio/attack/claw.wav','speed':7,'resistance':1,'attack_radius':120,'notice_radius':400}
 }
