@@ -1,6 +1,6 @@
 # TSOP
 
-Merci d'avoir télécharger mon jeux <3
+Merci d'avoir télécharger mon jeux
 
 
 Description:
