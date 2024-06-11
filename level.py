@@ -1,54 +1,59 @@
-import pygame 
+import pygame
 from settings import *
 from tile import Tile
 from player import Player
-from debug import debug
 from support import *
-from random import choice, randint
+from random import randint
 from weapon import Weapon
 from ui import UI
 from enemy import Enemy
 from particles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
+import sqlite3
+from datetime import datetime
 
 class Level:
 	def __init__(self):
-
-		# get the display surface 
+		# Obtenez la surface d'affichage
 		self.display_surface = pygame.display.get_surface()
 		self.game_paused = False
 
-		# sprite group setup
+		# Configuration des groupes de sprites
 		self.visible_sprites = YSortCameraGroup()
 		self.obstacle_sprites = pygame.sprite.Group()
 
-		# attack sprites
+		# Sprites d'attaque
 		self.current_attack = None
 		self.attack_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
 
-		# shield sprites
+		# Sprites de bouclier
 		self.current_shield = None
 
-		# magic sprites
+		# Sprites de magie
 		self.current_magic = None
 
-		# sprite setup
+		# Configuration des sprites
 		self.create_map()
 
-		# user inteface
+		# Interface utilisateur
 		self.ui = UI()
 		self.upgrade = Upgrade(self.player)
 
-		# particles
+		# Particules
 		self.animation_player = AnimationPlayer()
 		self.magic_player = MagicPlayer(self.animation_player)
 
+		# Écran de fin de jeu
 		self.game_over_screen = False
-
-		# position du texte
 		self.game_over_text_position = None
+
+		# Indicateur de fin de jeu
+		self.end = False
+
+		# Indicateur pour suivre si les données ont déjà été enregistrées
+		self.data_imported = False
 
 	def create_map(self):
 		layouts = {
@@ -89,7 +94,8 @@ class Level:
 								if col == '390': monster_name = 'bamboo'
 								elif col == '391': monster_name = 'spirit'
 								elif col == '392': monster_name = 'king_cheese'
-								else: monster_name = 'squid'
+								elif col == '393': monster_name = 'squid'
+								else: monster_name = 'end'
 								Enemy(
 									monster_name,
 									(x,y),
@@ -98,13 +104,13 @@ class Level:
 									self.damage_player,
 									self.trigger_death_particles,
 									self.add_exp)
-	
-	def create_attack(self):
-		self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites])
 
-	def create_magic(self,style,strength,cost):
+	def create_attack(self):
+		self.current_attack = Weapon(self.player, [self.visible_sprites, self.attack_sprites])
+
+	def create_magic(self, style, strength, cost):
 		if style == 'heal':
-			self.magic_player.heal(self.player,strength,cost,[self.visible_sprites])
+			self.magic_player.heal(self.player, strength, cost, [self.visible_sprites])
 
 	def destroy_magic(self):
 		if self.current_magic:
@@ -129,17 +135,17 @@ class Level:
 	def player_attack_logic(self):
 		if self.attack_sprites:
 			for attack_sprite in self.attack_sprites:
-				collision_sprites = pygame.sprite.spritecollide(attack_sprite,self.attackable_sprites,False)
+				collision_sprites = pygame.sprite.spritecollide(attack_sprite, self.attackable_sprites, False)
 				if collision_sprites:
 					for target_sprite in collision_sprites:
 						if target_sprite.sprite_type == 'grass':
 							pos = target_sprite.rect.center
-							offset = pygame.math.Vector2(0,5)
-							for leaf in range(randint(3,6)):
-								self.animation_player.create_grass_particles(pos - offset,[self.visible_sprites])
+							offset = pygame.math.Vector2(0, 5)
+							for leaf in range(randint(3, 6)):
+								self.animation_player.create_grass_particles(pos - offset, [self.visible_sprites])
 							target_sprite.kill()
 						else:
-							target_sprite.get_damage(self.player,attack_sprite.sprite_type)
+							target_sprite.get_damage(self.player, attack_sprite.sprite_type)
 							# Ajoute du mana lorsque le joueur inflige des dégâts
 							mana_gain = self.player.stats['mana_gain_per_hit']
 							self.player.energy += mana_gain
@@ -158,10 +164,10 @@ class Level:
 				self.player.dead = True
 				self.game_over()  # Appel de la méthode game_over lorsque le joueur est mort
 
-	def trigger_death_particles(self,pos,particle_type):
-		self.animation_player.create_particles(particle_type,pos,self.visible_sprites)
+	def trigger_death_particles(self, pos, particle_type):
+		self.animation_player.create_particles(particle_type, pos, self.visible_sprites)
 
-	def add_exp(self,amount):
+	def add_exp(self, amount):
 		self.player.exp += amount
 
 	def toggle_menu(self):
@@ -182,13 +188,13 @@ class Level:
 
 	def game_over(self):
 		self.game_over_screen = True
-		self.game_over_text_position = (640,300)
-		bar_position = (640,275)  # Position manuellement réglable de la barre noire
-		if self.player.dead:
+		self.game_over_text_position = (640, 300)
+		bar_position = (640, 275)  # Position manuellement réglable de la barre noire
+		if self.player.dead or self.end:  # Si le joueur est mort ou a touché "end"
 			font = pygame.font.SysFont('arial', 36)
-			game_over_text = font.render("YOUR MELTING", True, (255, 0, 0))
+			game_over_text = font.render("Game Over", True, (255, 0, 0))
 			text_rect = game_over_text.get_rect(center=self.game_over_text_position)  # Utiliser la position spécifiée
-	
+
 			# Dessiner un rectangle noir en dessous du texte
 			bar_height = 50
 			bar_rect = pygame.Rect(0, bar_position[1], self.display_surface.get_width(), bar_height)
@@ -197,11 +203,43 @@ class Level:
 			self.display_surface.blit(game_over_text, text_rect)
 			pygame.display.flip()  # Assurez-vous de rafraîchir l'écran après avoir dessiné le texte
 
+			# Enregistrer les données dans la base de données si le joueur est mort ou a touché "end"
+			if not self.data_imported:
+				self.import_data(self.player)
+				self.data_imported = True
+
 	def remove_enemies(self):
 		# Supprime tous les ennemis de la liste de sprites
 		enemy_sprites = [sprite for sprite in self.visible_sprites.sprites() if isinstance(sprite, Enemy)]
 		for enemy in enemy_sprites:
 			enemy.kill()
+
+	def end(self):
+		# Fait en sorte que, si player touche "end", alors l'événement fin = true
+		self.end = True
+
+	def import_data(self, player):
+		# Connexion à la base de données
+		connection = sqlite3.connect("data.db")
+		cursor = connection.cursor()
+
+		# Obtention de la date actuelle
+		current_date = datetime.now().strftime("%Y%m%d")
+
+		# Vérifiez la valeur maximale actuelle de l'ID
+		cursor.execute("SELECT MAX(id) FROM game_data")
+		max_id = cursor.fetchone()[0]
+
+		# Si la table est vide, commencez à partir de 1, sinon à partir de max_id + 1
+		next_id = max_id + 1 if max_id is not None else 1
+
+		# Insertion des données d'expérience dans la table game_data avec l'ID ajusté
+		cursor.execute("INSERT INTO game_data (id, score, date) VALUES (?, ?, ?)", (next_id, player.exp, current_date))
+
+		# Commit et fermeture de la connexion
+		connection.commit()
+		connection.close()
+
 
 class YSortCameraGroup(pygame.sprite.Group):
 	def __init__(self):

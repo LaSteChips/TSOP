@@ -42,6 +42,9 @@ class Game:
             # Vérifie si le joueur est mort et affiche l'écran de fin de partie
             if self.level.game_over_screen:
                 game_over = True  # Définit le drapeau du jeu terminé sur True
+            elif self.level.is_ended:  # Si le niveau est terminé
+                self.running = False  # Arrête le jeu
+                break  # Sort de la boucle de jeu
 
             pygame.display.update()
             self.clock.tick(FPS)

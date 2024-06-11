@@ -1,6 +1,6 @@
 # game setup
-WIDTH    = 1920
-HEIGHT   = 1080
+WIDTH    = 1280
+HEIGHT   = 720
 FPS      = 60
 TILESIZE = 64
 HITBOX_OFFSET = {
@@ -55,5 +55,6 @@ monster_data = {
 	'squid': {'health':5,'exp':35,'damage':12,'attack_type':'claw','attack_sound':'audio/attack/slash.wav','speed':5,'resistance':1.7 ,'attack_radius':80,'notice_radius':360},
 	'spirit': {'health': 7,'exp':50,'damage':25,'attack_type':'thunder','attack_sound':'audio/attack/fireball.wav','speed':6,'resistance':1.3 ,'attack_radius':60,'notice_radius':350},
 	'bamboo': {'health': 3,'exp':20,'damage':15,'attack_type':'leaf_attack','attack_sound':'audio/attack/slash.wav','speed':4,'resistance':1.5,'attack_radius':50,'notice_radius':300},
-	'king_cheese': {'health': 35,'exp':100,'damage':35,'attack_type':'slash','attack_sound':'audio/attack/claw.wav','speed':7,'resistance':1,'attack_radius':120,'notice_radius':400}
+	'king_cheese': {'health': 15,'exp':100,'damage':25,'attack_type':'slash','attack_sound':'audio/attack/claw.wav','speed':7,'resistance':1,'attack_radius':120,'notice_radius':400},
+	'end': {'health': 99999999999999999,'exp':0,'damage':999999999,'attack_type':'slash','attack_sound':'audio/attack/claw.wav','speed':0,'resistance':0,'attack_radius':40,'notice_radius':40}
 }

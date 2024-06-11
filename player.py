@@ -51,8 +51,8 @@ class Player(Entity):
 		self.magic = list(magic_data.keys())[self.magic_index]
 
 		# Stats
-		self.stats = {'health': 100, 'energy': 15, 'attack': 1, 'magic': 50, 'speed': 8, 'mana_gain_per_hit' : 5}
-		self.max_stats = {'health': 150, 'energy': 50, 'attack': 2, 'magic' : 75, 'speed': 10}
+		self.stats = {'health': 100, 'energy': 15, 'attack': 1, 'magic': 50, 'speed': 15, 'mana_gain_per_hit' : 5}
+		self.max_stats = {'health': 150, 'energy': 50, 'attack': 2, 'magic' : 75, 'speed': 20}
 		self.upgrade_cost = {'health': 100, 'energy': 100, 'attack': 100, 'magic' : 100, 'speed': 100}
 		self.health = self.stats['health']
 		self.energy = self.stats['energy']
