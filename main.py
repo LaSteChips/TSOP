@@ -23,6 +23,7 @@ class Game:
             self.game_loop()
 
     def game_loop(self):
+        print("Début de la boucle de jeu")  # Ajouter une impression pour vérifier que cette partie fonctionne
         game_over = False  # Variable pour suivre si le jeu est terminé
         while True:
             for event in pygame.event.get():
@@ -34,17 +35,21 @@ class Game:
                         self.level.toggle_menu()
                     if game_over and self.level.player.dead:  # Si le jeu est terminé et que le joueur est mort et qu'une touche est pressée
                         self.restart_game()  # Redémarre le jeu
-
-            # Exécution de la logique du jeu
+    
+            # Remplir l'écran avec la couleur d'arrière-plan
             self.screen.fill(WATER_COLOR)
+            print("Écran rempli avec la couleur de fond")  # Vérifier si cette ligne est exécutée
+    
+            # Exécution de la logique du jeu
             self.level.run()
-
+    
             # Vérifie si le joueur est mort et affiche l'écran de fin de partie
             if self.level.game_over_screen:
                 game_over = True  # Définit le drapeau du jeu terminé sur True
-
+    
             pygame.display.update()
             self.clock.tick(FPS)
+
 
     def show_start_screen(self):
         self.screen.fill((0, 0, 0))  # Remplit l'écran avec une couleur noire
@@ -58,17 +63,17 @@ class Game:
         # Rafraîchir l'écran pour afficher le texte
         pygame.display.update()
 
-        # Contrôle du temps d'attente
-        clock = pygame.time.Clock()
+        # Contrôle du temps d'attente sans bloquer la boucle
+        pygame.time.set_timer(pygame.USEREVENT, 1000)  # Événement qui se déclenche après 1 seconde
         waiting = True
         while waiting:
-            clock.tick(120)  # Limite la boucle à 120 FPS
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                    waiting = False
+                if event.type == pygame.USEREVENT:  # L'événement déclenché après 1 seconde
                     waiting = False
                     
                     # Effacer l'écran
@@ -82,7 +87,7 @@ class Game:
                     pygame.display.update()
                     
                     # Attendre un court instant pour que l'utilisateur voie le message
-                    pygame.time.wait(1000)  # Attendre 1 seconde (1000 millisecondes)
+                    pygame.time.wait(500)  # Attendre 0,5 seconde (500 millisecondes)
                     
                     # Démarrer le jeu
                     self.running = True
