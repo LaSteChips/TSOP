@@ -1,5 +1,14 @@
 import pygame
 import sys
+import asyncio
+import os
+
+# Récupérer le chemin absolu du dossier contenant ce script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Ajouter le dossier du projet au sys.path
+sys.path.append(BASE_DIR)
+
 from settings import *
 from level import Level
 
@@ -8,22 +17,30 @@ class Game:
         # Initialisation générale
         pygame.init()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption('Fondu')
+        pygame.display.set_caption('The Slime Of Pain')
         self.clock = pygame.time.Clock()
         
         self.level = None  # Initialisation du niveau à None
         
-        self.running = False  # Variable pour suivre si le jeu est en cours ou non
+        self.running = True  # Démarrer le jeu immédiatement
 
-    def run(self):
-        self.show_start_screen()  # Afficher l'écran de démarrage
+    async def run(self):
+        self.show_loading_screen()  # Afficher l'écran de chargement
+        self.level = Level()  # Création d'un nouveau niveau
+        await self.game_loop()
 
-        while self.running:
-            self.level = Level()  # Création d'un nouveau niveau
-            self.game_loop()
+    def show_loading_screen(self):
+        self.screen.fill((0, 0, 0))  # Remplit l'écran avec une couleur noire
+        
+        font = pygame.font.Font(None, 32)
+        text = font.render("Chargement du jeu...", True, (255, 255, 255))  # Couleur blanche
+        text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+        self.screen.blit(text, text_rect)
+        
+        pygame.display.update()
+        pygame.time.wait(1000)  # Attendre 1 seconde
 
-    def game_loop(self):
-        print("Début de la boucle de jeu")  # Ajouter une impression pour vérifier que cette partie fonctionne
+    async def game_loop(self):
         game_over = False  # Variable pour suivre si le jeu est terminé
         while True:
             for event in pygame.event.get():
@@ -38,8 +55,7 @@ class Game:
     
             # Remplir l'écran avec la couleur d'arrière-plan
             self.screen.fill(WATER_COLOR)
-            print("Écran rempli avec la couleur de fond")  # Vérifier si cette ligne est exécutée
-    
+
             # Exécution de la logique du jeu
             self.level.run()
     
@@ -48,49 +64,7 @@ class Game:
                 game_over = True  # Définit le drapeau du jeu terminé sur True
     
             pygame.display.update()
-            self.clock.tick(FPS)
-
-
-    def show_start_screen(self):
-        self.screen.fill((0, 0, 0))  # Remplit l'écran avec une couleur noire
-
-        # Texte "Jouer" au centre de l'écran
-        font = pygame.font.Font(None, 64)
-        text = font.render("Start", True, (255, 255, 255))  # Couleur blanche
-        text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-        self.screen.blit(text, text_rect)
-
-        # Rafraîchir l'écran pour afficher le texte
-        pygame.display.update()
-
-        # Contrôle du temps d'attente sans bloquer la boucle
-        pygame.time.set_timer(pygame.USEREVENT, 1000)  # Événement qui se déclenche après 1 seconde
-        waiting = True
-        while waiting:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-                    waiting = False
-                if event.type == pygame.USEREVENT:  # L'événement déclenché après 1 seconde
-                    waiting = False
-                    
-                    # Effacer l'écran
-                    self.screen.fill((0, 0, 0))
-                    
-                    # Afficher le message de lancement
-                    launch_font = pygame.font.Font(None, 32)
-                    launch_text = launch_font.render("Lancement du Jeu...", True, (255, 255, 255))  # Couleur blanche
-                    launch_text_rect = launch_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
-                    self.screen.blit(launch_text, launch_text_rect)
-                    pygame.display.update()
-                    
-                    # Attendre un court instant pour que l'utilisateur voie le message
-                    pygame.time.wait(500)  # Attendre 0,5 seconde (500 millisecondes)
-                    
-                    # Démarrer le jeu
-                    self.running = True
+            await asyncio.sleep(1 / FPS)
 
     def restart_game(self):
         self.level.player.dead = False
@@ -99,4 +73,4 @@ class Game:
 
 if __name__ == '__main__':
     game = Game()
-    game.run()
+    asyncio.run(game.run())
